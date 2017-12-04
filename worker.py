@@ -28,18 +28,18 @@ class Worker(object):
             if found_valid_block:
                 nonce = 0
                 mining_block = self.chain.generate_next_block()
+                print(f'worker> mining new block #{mining_block.index}')
             else:
                 nonce += config.rounds
 
-            print(f'worker> mining rounds={config.rounds} nonce={nonce}')
-
             mining_block.mine_rounds(nonce)
 
-            print('worker> mining round done. checking for remote blocks.')
             remote_blocks = get_messages(self.queue)
-            print(f'worker> received {len(remote_blocks)} remote block(s).')
 
             found_valid_block = False
+
+            if remote_blocks:
+                print(f'worker> received {len(remote_blocks)} block(s)')
 
             for blk in remote_blocks:
                 if self.chain.is_valid_next(blk):
@@ -51,8 +51,6 @@ class Worker(object):
 
             if found_valid_block:
                 continue
-
-            print('worker> no valid remote blocks received.')
 
             if mining_block.passes_difficulty():
                 print(f'worker> successfully mined block: {mining_block}')

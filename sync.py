@@ -57,8 +57,10 @@ def broadcast_block(block):
         req = Request(url, data, headers)
         try:
             urlopen(req, timeout=1)
-        except Exception as e:
-            print(f'Error posting block to {url} error={e}')
+        except Exception:
+            pass
+        else:
+            print(f'Posted block to: {url}')
 
     data = block.to_json().encode('utf8')
     headers = {'Content-Type': 'application/json'}

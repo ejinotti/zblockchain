@@ -47,7 +47,6 @@ def get_handler(queue):
         def new_block(self):
             content_length = int(self.headers['Content-Length'])
             block = Block(json.loads(self.rfile.read(content_length)))
-            print(f'Received remote block: {block}')
             code = 200 if put_message(queue, block) else 503
             self.send_response(code)
             self.end_headers()
